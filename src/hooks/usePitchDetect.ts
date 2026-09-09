@@ -10,7 +10,7 @@ export interface PitchData {
   isActive: boolean;
 }
 
-export function usePitchDetect(active: boolean) {
+export function usePitchDetect(active: boolean, a4Frequency: number = 440) {
   const [pitchData, setPitchData] = useState<PitchData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -91,7 +91,7 @@ export function usePitchDetect(active: boolean) {
     if (rms > 0.01) {
       const freq = yin(buffer, audioCtxRef.current.sampleRate);
       if (freq !== -1 && freq > 20 && freq < 4000) {
-        const info = getNoteInfo(freq);
+        const info = getNoteInfo(freq, a4Frequency);
         setPitchData({
           frequency: freq,
           noteName: info.noteName,

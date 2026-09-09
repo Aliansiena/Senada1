@@ -17,67 +17,68 @@ export function ChromaticDisplay({ pitchData, hapticEnabled }: ChromaticDisplayP
   
   useHapticFeedback(isAccurate, hapticEnabled);
   
-  let angle = 0;
-  let currentNoteIndex = -1;
-
+  let cents = 0;
   if (pitchData && pitchData.isActive) {
-    currentNoteIndex = CLOCK_NOTES.indexOf(pitchData.noteName);
-    if (currentNoteIndex !== -1) {
-      angle = (currentNoteIndex * 30) + (pitchData.cents / 100) * 30;
-    }
+    cents = pitchData.cents;
   }
 
+  // Calculate needle rotation based on cents (-50 to +50 -> -60deg to +60deg)
+  const angle = (cents / 50) * 60;
+
   return (
-    <div className="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto rounded-full border-4 border-gray-200 dark:border-gray-800 flex items-center justify-center shadow-inner">
-      {CLOCK_NOTES.map((note, index) => {
-        const theta = (index * 30 - 90) * (Math.PI / 180);
-        const radius = 100;
-        const x = Math.cos(theta) * radius;
-        const y = Math.sin(theta) * radius;
+    <div className="relative w-full max-w-sm mx-auto flex flex-col items-center">
+      {/* Gauge Arc */}
+      <div className="relative w-64 h-32 overflow-hidden mb-4">
+        {/* Arc Background */}
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full border-[12px] border-gray-100 dark:border-gray-800" />
         
-        const isCurrent = currentNoteIndex === index;
+        {/* Tick marks */}
+        {[-50, -25, 0, 25, 50].map((tick) => {
+          const tickAngle = (tick / 50) * 60;
+          return (
+            <div
+              key={tick}
+              className="absolute bottom-0 left-1/2 w-0.5 h-64 origin-bottom -translate-x-1/2"
+              style={{ transform: `rotate(${tickAngle}deg)` }}
+            >
+              <div className={`w-full h-4 ${tick === 0 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
+            </div>
+          );
+        })}
 
-        return (
+        {/* Needle */}
+        {pitchData && pitchData.isActive && (
           <motion.div
-            key={note}
-            animate={isCurrent && isAccurate ? { scale: [1.1, 1.3, 1.25], opacity: [0.8, 1, 1] } : { scale: isCurrent ? 1.1 : 1, opacity: isCurrent ? 1 : 0.4 }}
-            transition={{ duration: 0.3 }}
-            className={`absolute font-bold text-lg sm:text-xl transition-colors duration-200 ${
-              isCurrent
-                ? isAccurate
-                  ? 'text-blue-500 shadow-blue-500'
-                  : 'text-gray-900 dark:text-white'
-                : 'text-gray-400 dark:text-gray-600'
-            }`}
-            style={{
-              transform: `translate(${x}px, ${y}px)`
-            }}
+            animate={{ rotate: angle }}
+            transition={{ type: "spring", stiffness: 150, damping: 20 }}
+            className="absolute bottom-0 left-1/2 w-1.5 h-32 origin-bottom -translate-x-1/2 z-10"
           >
-            {note}
+            <div className={`w-full h-full rounded-t-full ${isAccurate ? 'bg-blue-500' : 'bg-gray-900 dark:bg-white'}`} />
           </motion.div>
-        );
-      })}
-
-      <div className="absolute w-full h-full flex items-center justify-center pointer-events-none">
-        <motion.div
-          animate={{ rotate: angle }}
-          transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          className="absolute w-1.5 h-[40%] origin-bottom rounded-full"
-          style={{
-            bottom: '50%',
-            backgroundColor: pitchData?.isActive ? (isAccurate ? '#3b82f6' : '#9ca3af') : 'transparent'
-          }}
-        />
-        <div className="absolute w-4 h-4 bg-gray-900 dark:bg-white rounded-full z-10" />
+        )}
+        
+        {/* Center Cover */}
+        <div className="absolute bottom-0 left-1/2 w-12 h-12 bg-white dark:bg-black rounded-t-full origin-bottom -translate-x-1/2 z-20" />
       </div>
 
-      <div className="absolute bottom-8 text-center w-full flex flex-col items-center">
-        <span className="text-3xl font-black tracking-tighter">
-          {pitchData && pitchData.isActive ? pitchData.noteName : '--'}
-        </span>
-        <span className={`text-sm font-medium ${isAccurate ? 'text-blue-500' : 'text-gray-500'}`}>
-          {pitchData && pitchData.isActive ? `${pitchData.cents > 0 ? '+' : ''}${pitchData.cents} cents` : ''}
-        </span>
+      <div className="flex flex-col items-center justify-center mt-2 h-24">
+        {pitchData && pitchData.isActive ? (
+          <motion.div
+            animate={isAccurate ? { scale: [1, 1.2, 1.1] } : { scale: 1 }}
+            className={`text-6xl font-black tracking-tighter ${isAccurate ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}
+          >
+            {pitchData.noteName}
+            <span className="text-2xl opacity-50">{pitchData.octave}</span>
+          </motion.div>
+        ) : (
+          <div className="text-6xl font-black tracking-tighter text-gray-300 dark:text-gray-700">
+            --
+          </div>
+        )}
+        
+        <div className={`text-lg font-bold mt-2 ${isAccurate ? 'text-blue-500' : 'text-gray-500'}`}>
+          {pitchData && pitchData.isActive ? `${cents > 0 ? '+' : ''}${Math.round(cents)} cents` : 'Standby'}
+        </div>
       </div>
     </div>
   );

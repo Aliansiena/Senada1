@@ -2,24 +2,24 @@ export const NOTES = [
   'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'
 ];
 
-export function getNoteFromFrequency(frequency: number): number {
-  const noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
+export function getNoteFromFrequency(frequency: number, a4Freq: number = 440): number {
+  const noteNum = 12 * (Math.log(frequency / a4Freq) / Math.log(2));
   return Math.round(noteNum) + 69;
 }
 
-export function getFrequencyFromNote(note: number): number {
-  return 440 * Math.pow(2, (note - 69) / 12);
+export function getFrequencyFromNote(note: number, a4Freq: number = 440): number {
+  return a4Freq * Math.pow(2, (note - 69) / 12);
 }
 
-export function getCents(frequency: number, note: number): number {
+export function getCents(frequency: number, note: number, a4Freq: number = 440): number {
   return Math.floor(
-    1200 * Math.log(frequency / getFrequencyFromNote(note)) / Math.log(2)
+    1200 * Math.log(frequency / getFrequencyFromNote(note, a4Freq)) / Math.log(2)
   );
 }
 
-export function getNoteInfo(frequency: number) {
-  const noteNum = getNoteFromFrequency(frequency);
-  const cents = getCents(frequency, noteNum);
+export function getNoteInfo(frequency: number, a4Freq: number = 440) {
+  const noteNum = getNoteFromFrequency(frequency, a4Freq);
+  const cents = getCents(frequency, noteNum, a4Freq);
   const noteName = NOTES[noteNum % 12];
   const octave = Math.floor(noteNum / 12) - 1;
   return { noteNum, noteName, cents, octave };

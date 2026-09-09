@@ -55,7 +55,7 @@ export function HarmonicaDisplay({ pitchData, hapticEnabled }: HarmonicaDisplayP
 
   return (
     <div className="flex flex-col items-center w-full max-w-2xl mx-auto overflow-x-auto pb-4">
-      <div className="flex justify-center items-center mb-8 w-full max-w-sm">
+      <div className="flex justify-center items-center mb-8 w-full max-w-sm px-4">
         <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-full relative">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-5 bg-gray-400 z-0" />
           {pitchData && pitchData.isActive && (
@@ -68,8 +68,9 @@ export function HarmonicaDisplay({ pitchData, hapticEnabled }: HarmonicaDisplayP
         </div>
       </div>
 
-      <div className="flex gap-2 p-4 bg-gray-100 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-inner">
-        {Array.from({ length: 10 }).map((_, i) => {
+      <div className="w-full overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4">
+        <div className="flex gap-2 p-4 bg-gray-100 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-inner min-w-max mx-auto">
+          {Array.from({ length: 10 }).map((_, i) => {
           const holeNum = i + 1;
           const blowNote = HARMONICA_NOTES.find(n => n.hole === holeNum && n.type === 'blow');
           const drawNote = HARMONICA_NOTES.find(n => n.hole === holeNum && n.type === 'draw');
@@ -85,7 +86,7 @@ export function HarmonicaDisplay({ pitchData, hapticEnabled }: HarmonicaDisplayP
               
               <motion.div 
                 animate={(isBlowActive || isDrawActive) && isAccurate ? { scale: [1, 1.15, 1.1] } : { scale: (isBlowActive || isDrawActive) ? 1.1 : 1 }}
-                className={`w-10 h-10 rounded border-2 flex items-center justify-center font-black text-lg transition-all ${
+                className={`w-10 h-10 shrink-0 rounded border-2 flex items-center justify-center font-black text-lg transition-all ${
                 isBlowActive || isDrawActive
                   ? isAccurate ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/40 text-blue-600 shadow-lg' : 'border-gray-900 bg-white dark:bg-black dark:border-white text-gray-900 dark:text-white'
                   : 'border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400'
@@ -99,6 +100,7 @@ export function HarmonicaDisplay({ pitchData, hapticEnabled }: HarmonicaDisplayP
             </div>
           );
         })}
+        </div>
       </div>
       
       <div className="mt-8 flex justify-between w-full max-w-sm px-4 text-sm font-medium text-gray-500">

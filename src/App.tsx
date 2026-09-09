@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mic, MicOff, Music, Guitar, Activity, Settings as SettingsIcon } from 'lucide-react';
+import { motion } from 'motion/react';
 import { usePitchDetect } from './hooks/usePitchDetect';
 import { ChromaticDisplay } from './components/ChromaticDisplay';
 import { GuitarDisplay, GUITAR_STRINGS, BASS_STRINGS, UKULELE_STRINGS } from './components/GuitarDisplay';
@@ -18,13 +19,18 @@ export default function App() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hapticEnabled, setHapticEnabled] = useState(true);
+  const [a4Frequency, setA4Frequency] = useState(440);
   
-  const { pitchData, error } = usePitchDetect(active);
+  const { pitchData, error } = usePitchDetect(active, a4Frequency);
 
   useEffect(() => {
     const savedHaptic = localStorage.getItem('hapticEnabled');
     if (savedHaptic !== null) {
       setHapticEnabled(savedHaptic === 'true');
+    }
+    const savedA4 = localStorage.getItem('a4Frequency');
+    if (savedA4 !== null) {
+      setA4Frequency(parseFloat(savedA4));
     }
   }, []);
 
@@ -59,6 +65,11 @@ export default function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleA4Change = (freq: number) => {
+    setA4Frequency(freq);
+    localStorage.setItem('a4Frequency', freq.toString());
   };
 
   const closeTutorial = () => {
@@ -96,33 +107,38 @@ export default function App() {
           <div className="flex overflow-x-auto hide-scrollbar bg-gray-100 dark:bg-gray-900 p-1 rounded-full mb-8 shadow-inner w-full max-w-2xl px-1">
             <button
               onClick={() => setMode('chromatic')}
-              className={`whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-all ${mode === 'chromatic' ? 'bg-white dark:bg-black shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              className={`relative whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-colors ${mode === 'chromatic' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
             >
-              <Activity className="w-4 h-4" /> Kromatik
+              {mode === 'chromatic' && <motion.div layoutId="mode-bg" className="absolute inset-0 bg-white dark:bg-black rounded-full shadow-sm z-0" />}
+              <span className="relative z-10 flex items-center gap-2"><Activity className="w-4 h-4" /> Kromatik</span>
             </button>
             <button
               onClick={() => setMode('guitar')}
-              className={`whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-all ${mode === 'guitar' ? 'bg-white dark:bg-black shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              className={`relative whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-colors ${mode === 'guitar' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
             >
-              <Guitar className="w-4 h-4" /> Gitar
+              {mode === 'guitar' && <motion.div layoutId="mode-bg" className="absolute inset-0 bg-white dark:bg-black rounded-full shadow-sm z-0" />}
+              <span className="relative z-10 flex items-center gap-2"><Guitar className="w-4 h-4" /> Gitar</span>
             </button>
             <button
               onClick={() => setMode('bass')}
-              className={`whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-all ${mode === 'bass' ? 'bg-white dark:bg-black shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              className={`relative whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-colors ${mode === 'bass' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
             >
-              <Guitar className="w-4 h-4" /> Bass
+              {mode === 'bass' && <motion.div layoutId="mode-bg" className="absolute inset-0 bg-white dark:bg-black rounded-full shadow-sm z-0" />}
+              <span className="relative z-10 flex items-center gap-2"><Guitar className="w-4 h-4" /> Bass</span>
             </button>
             <button
               onClick={() => setMode('ukulele')}
-              className={`whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-all ${mode === 'ukulele' ? 'bg-white dark:bg-black shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              className={`relative whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-colors ${mode === 'ukulele' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
             >
-              <Music className="w-4 h-4" /> Ukulele
+              {mode === 'ukulele' && <motion.div layoutId="mode-bg" className="absolute inset-0 bg-white dark:bg-black rounded-full shadow-sm z-0" />}
+              <span className="relative z-10 flex items-center gap-2"><Music className="w-4 h-4" /> Ukulele</span>
             </button>
             <button
               onClick={() => setMode('harmonica')}
-              className={`whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-all ${mode === 'harmonica' ? 'bg-white dark:bg-black shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              className={`relative whitespace-nowrap flex-1 flex justify-center items-center gap-2 py-2.5 px-6 rounded-full text-sm font-bold transition-colors ${mode === 'harmonica' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
             >
-              <Music className="w-4 h-4" /> Harmonika
+              {mode === 'harmonica' && <motion.div layoutId="mode-bg" className="absolute inset-0 bg-white dark:bg-black rounded-full shadow-sm z-0" />}
+              <span className="relative z-10 flex items-center gap-2"><Music className="w-4 h-4" /> Harmonika</span>
             </button>
           </div>
 
@@ -171,6 +187,8 @@ export default function App() {
         toggleTheme={toggleTheme}
         hapticEnabled={hapticEnabled}
         toggleHaptic={toggleHaptic}
+        a4Frequency={a4Frequency}
+        setA4Frequency={handleA4Change}
         openTutorial={() => setShowTutorial(true)}
       />
     </div>

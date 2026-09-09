@@ -16,26 +16,26 @@ interface GuitarDisplayProps {
 }
 
 export const GUITAR_STRINGS: StringConfig[] = [
-  { name: 'E4', freq: 329.63, stringNum: 1 },
-  { name: 'B3', freq: 246.94, stringNum: 2 },
-  { name: 'G3', freq: 196.00, stringNum: 3 },
-  { name: 'D3', freq: 146.83, stringNum: 4 },
-  { name: 'A2', freq: 110.00, stringNum: 5 },
   { name: 'E2', freq: 82.41,  stringNum: 6 },
+  { name: 'A2', freq: 110.00, stringNum: 5 },
+  { name: 'D3', freq: 146.83, stringNum: 4 },
+  { name: 'G3', freq: 196.00, stringNum: 3 },
+  { name: 'B3', freq: 246.94, stringNum: 2 },
+  { name: 'E4', freq: 329.63, stringNum: 1 },
 ];
 
 export const BASS_STRINGS: StringConfig[] = [
-  { name: 'G2', freq: 98.00, stringNum: 1 },
-  { name: 'D2', freq: 73.42, stringNum: 2 },
-  { name: 'A1', freq: 55.00, stringNum: 3 },
   { name: 'E1', freq: 41.20, stringNum: 4 },
+  { name: 'A1', freq: 55.00, stringNum: 3 },
+  { name: 'D2', freq: 73.42, stringNum: 2 },
+  { name: 'G2', freq: 98.00, stringNum: 1 },
 ];
 
 export const UKULELE_STRINGS: StringConfig[] = [
-  { name: 'A4', freq: 440.00, stringNum: 1 },
-  { name: 'E4', freq: 329.63, stringNum: 2 },
-  { name: 'C4', freq: 261.63, stringNum: 3 },
   { name: 'G4', freq: 392.00, stringNum: 4 },
+  { name: 'C4', freq: 261.63, stringNum: 3 },
+  { name: 'E4', freq: 329.63, stringNum: 2 },
+  { name: 'A4', freq: 440.00, stringNum: 1 },
 ];
 
 export function GuitarDisplay({ pitchData, hapticEnabled, strings }: GuitarDisplayProps) {

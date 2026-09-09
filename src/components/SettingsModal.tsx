@@ -9,6 +9,8 @@ interface SettingsModalProps {
   toggleTheme: () => void;
   hapticEnabled: boolean;
   toggleHaptic: () => void;
+  a4Frequency: number;
+  setA4Frequency: (freq: number) => void;
   openTutorial: () => void;
 }
 
@@ -19,6 +21,8 @@ export function SettingsModal({
   toggleTheme,
   hapticEnabled,
   toggleHaptic,
+  a4Frequency,
+  setA4Frequency,
   openTutorial
 }: SettingsModalProps) {
   return (
@@ -85,6 +89,33 @@ export function SettingsModal({
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${hapticEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
                   </button>
+                </div>
+
+                <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <Settings className="w-5 h-5 text-purple-500" />
+                      <div>
+                        <h3 className="font-bold text-sm">Frekuensi A4 (Standar)</h3>
+                        <p className="text-xs text-gray-500">Kalibrasi pitch dasar</p>
+                      </div>
+                    </div>
+                    <span className="font-mono text-sm font-bold text-blue-500">{a4Frequency} Hz</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="430"
+                    max="450"
+                    step="1"
+                    value={a4Frequency}
+                    onChange={(e) => setA4Frequency(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-blue-500 mt-2"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-400 mt-1 font-mono">
+                    <span>430</span>
+                    <span>440</span>
+                    <span>450</span>
+                  </div>
                 </div>
 
                 <button
