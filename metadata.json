@@ -1,0 +1,6 @@
+{
+  "name": "Senada",
+  "description": "Aplikasi tuner presisi untuk Gitar, Harmonika Diatonik, dan Kromatik.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
